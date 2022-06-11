@@ -23,18 +23,18 @@ print(f"depth: {depth}")
 
 ### Primary Modules
 
-Consisting of simulation techniques, the core of Hamiltonian is divided into 
-independent modules that can each be used along with the secondary modules. 
+Consisting of simulation techniques, the core of Hamiltonian is divided into
+independent modules that can each be used along with the secondary modules.
 Currently, the following simulation techniques are supported:
 
 - Trotterization
 
 ### Secondary Modules
 
-On top of primary modules, secondary modules provide a layer of abstraction for 
-the users to use these simulation techniques for various different purposes. 
-These secondary modules can be used together to compare and choose 
-hamiltonian simulations specific to the task required. The planned secondary 
+On top of primary modules, secondary modules provide a layer of abstraction for
+the users to use these simulation techniques for various different purposes.
+These secondary modules can be used together to compare and choose
+hamiltonian simulations specific to the task required. The planned secondary
 modules will be of the following purpose:
 
 - Comparison of methods
@@ -45,8 +45,8 @@ modules will be of the following purpose:
 
 # Contribution Guidelines
 
-For contributing please setup a venv and install [`requirements-dev.txt`](requirements-dev.txt). 
-The separation is to avoid users from installing unnecessary packages that are 
+For contributing please setup a venv and install [`requirements-dev.txt`](requirements-dev.txt).
+The separation is to avoid users from installing unnecessary packages that are
 only required for running checks locally. Ensure that the following standards
 are met with before making a PR to avoid unnecessary load on CI.
 
@@ -65,7 +65,7 @@ The tests can be run by:
 ```
 
 ## Testing
-Each new functionality must be supported with tests. Overall tests can be 
+Each new functionality must be supported with tests. Overall tests can be
 performed by:
 ```
 ./checks/pytest.sh
