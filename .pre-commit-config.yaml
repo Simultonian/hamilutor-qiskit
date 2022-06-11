@@ -1,0 +1,34 @@
+repos:
+# corresponding checks file is `checks/flake8.sh`
+-   repo: local
+    hooks:
+    -   id: flake8
+        name: flake8
+        entry: flake8
+        language: system
+        types: [python]
+        args:
+         - --count
+         - --show-source 
+         - --statistics
+         - --count 
+         - --exit-zero 
+         - --max-complexity=10 
+         - --max-line-length=127 
+         - --statistics
+# corresponding checks file is `checks/mypy.sh`
+    -   id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+# corresponding checks file is `checks/pylint.sh`
+    -  id: pylint
+       name: pylint
+       entry: pylint
+       language: system
+       types: [python]
+       args:
+        - "--recursive"
+        - "y"
+        - "."
