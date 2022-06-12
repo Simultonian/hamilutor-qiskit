@@ -8,12 +8,10 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test file for running an example simulation."""
-from simultonian import qiskit
+"""Suzuki Trotter functionality for constructing circuits."""
 
-def main():
-    assert qiskit is not None
+from ..constructor import Constructor
 
 
-if __name__ == "__main__":
-    main()
+class Suzuki(Constructor):
+    pass

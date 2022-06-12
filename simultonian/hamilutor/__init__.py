@@ -8,12 +8,10 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test file for running an example simulation."""
-from simultonian import qiskit
-
-def main():
-    assert qiskit is not None
-
-
-if __name__ == "__main__":
-    main()
+"""
+    Hamilutor is a package that is independent sub-package of Simultonian
+    that can be used for running Hamiltonian simulations across multiple
+    frameworks. It is used along with other sub-packages of Simultonian
+    to draw inferences about simulation techniques without fully understanding
+    the methods.
+"""

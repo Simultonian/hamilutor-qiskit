@@ -8,12 +8,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test file for running an example simulation."""
-from simultonian import qiskit
+"""Main package of Simultonian"""
+from .hamilutor import qiskit
 
-def main():
-    assert qiskit is not None
-
-
-if __name__ == "__main__":
-    main()
+__all__ = ['qiskit']

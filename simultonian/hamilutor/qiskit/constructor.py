@@ -8,12 +8,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test file for running an example simulation."""
-from simultonian import qiskit
-
-def main():
-    assert qiskit is not None
+"""Base class for Hamiltonian Simulation functionality."""
 
 
-if __name__ == "__main__":
-    main()
+class Constructor:
+    pass
