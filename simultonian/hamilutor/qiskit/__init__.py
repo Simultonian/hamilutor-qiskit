@@ -15,5 +15,6 @@
     primary circuits before framework based optimizations are applied.
 """
 from .trotter import Lie, Suzuki, Qdrift
+from .parser import Parser
 
-__all__ = ['Lie', 'Suzuki', 'Qdrift']
+__all__ = ['Lie', 'Suzuki', 'Qdrift', 'Parser']
