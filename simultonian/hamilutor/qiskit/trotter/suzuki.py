@@ -14,4 +14,5 @@ from ..constructor import Constructor
 
 
 class Suzuki(Constructor):
-    pass
+    """Suzuki method.
+    """

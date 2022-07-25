@@ -14,13 +14,13 @@ from typing import List, Tuple
 
 class BaseParser:
     """
-        Base class for Parser to parse different kinds of files and objects. The
-        support for each file type and format is framework dependent.
+        Base class for Parser to parse different kinds of files and objects.
+        The support for each file type and format is framework dependent.
 
         In general, parser does parsing from and to files. For example,
-        parsing `.pauli` file into relevant format is possible in qiskit. Parser
-        also encapsulates methods to convert circuits and other such objects to
-        strings and by nature, files.
+        parsing `.pauli` file into relevant format is possible in qiskit.
+        Parser also encapsulates methods to convert circuits and other such
+        objects to strings and by nature, files.
 
         =================
         Formats supported
@@ -44,18 +44,20 @@ class BaseParser:
             extension = file_name.split(".")[-1]
 
         except TypeError as err:
-            raise TypeError(f"Invalid file name {file_name}, make sure that you have",
-                            "file with the correct naming convention.") from err
+            raise TypeError(f"Invalid file name {file_name}, make sure that ",
+                            "you have file with the correct naming ",
+                            "convention.") from err
         except AttributeError as err:
-            raise AttributeError(f"Invalid file name {file_name}, make sure that you have",
-                                 "file with the correct naming convention.") from err
+            raise AttributeError(f"Invalid file name {file_name}, "
+                                 "make sure that you have file with the",
+                                 "correct naming convention.") from err
 
         if extension not in self.formats:
             raise NotImplementedError(
                 f"format {extension} is not valid in {self.framework}.")
 
         string = ""
-        with open(file_name, "r") as file:
+        with open(file_name, "r", encoding="utf-8") as file:
             string = file.read()
 
         return extension, string

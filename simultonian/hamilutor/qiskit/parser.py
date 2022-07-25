@@ -72,7 +72,8 @@ class Parser(BaseParser):
     def __call__(self, file: str) -> PauliSumOp:
         """Parse given file
 
-        Read the file and parse into a `PauliSumOp` if the format is acceptable.
+        Read the file and parse into a `PauliSumOp` if the format is
+        acceptable.
 
         Args:
             - file: file name

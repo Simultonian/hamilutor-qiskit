@@ -13,4 +13,5 @@ from ..constructor import Constructor
 
 
 class Lie(Constructor):
-    pass
+    """Lie Trotter method
+    """

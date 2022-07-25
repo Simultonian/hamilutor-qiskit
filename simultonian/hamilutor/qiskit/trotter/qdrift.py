@@ -13,4 +13,5 @@ from ..constructor import Constructor
 
 
 class Qdrift(Constructor):
-    pass
+    """Qdrift method.
+    """
