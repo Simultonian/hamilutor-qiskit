@@ -8,6 +8,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+# pylint: disable=too-many-instance-attributes
 """Base class for Hamiltonian Simulation functionality."""
 
 from qiskit import QuantumCircuit  # type: ignore

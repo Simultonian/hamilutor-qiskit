@@ -11,12 +11,10 @@
 
 from typing import List, Tuple
 import os
-import numpy as np
 import pytest
 from testfixtures import TempDirectory  # type: ignore
 
 from qiskit.opflow import PauliSumOp  # type: ignore
-
 from simultonian.hamilutor.qiskit import Parser
 
 
@@ -45,4 +43,4 @@ def test_hamiltonian(string: str, pauli_list: List[Tuple[str, complex]]):
 
     expected_result = PauliSumOp.from_list(pauli_list)
 
-    np.testing.assert_equal(result, expected_result)
+    assert result  == expected_result
