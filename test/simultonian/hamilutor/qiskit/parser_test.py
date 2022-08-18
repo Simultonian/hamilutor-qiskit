@@ -43,4 +43,4 @@ def test_hamiltonian(string: str, pauli_list: List[Tuple[str, complex]]):
 
     expected_result = PauliSumOp.from_list(pauli_list)
 
-    assert result  == expected_result
+    assert result == expected_result

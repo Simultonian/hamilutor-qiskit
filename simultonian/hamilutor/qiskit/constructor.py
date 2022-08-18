@@ -51,6 +51,23 @@ class Constructor:
 
         self.pauli_op = pauli_op
 
+    def load_hamiltonian_string(self, h_string: str, optimizer=None):
+        """Load given Hamiltonian
+
+        Loads the given Hamiltonian from the folder `hamiltonian/`.
+        Hamiltonian when read from a file can further be optimized
+
+        Args:
+            - hamiltonian: name of the hamiltonian file
+            - optimizer: callable that will take in the pauli_op and optimize
+                         it.
+        """
+        pauli_op: PauliSumOp = self.parser.parse_pauli(h_string)
+        if optimizer is not None:
+            pauli_op = optimizer(pauli_op)
+
+        self.pauli_op = pauli_op
+
     def re_init(self):
         """
         Re-initialize the synthesizer for the construction of circuit.
