@@ -3,4 +3,5 @@
 folder=`dirname -- "$0"`
 cd "$folder/.."
 echo "Running pytest at $PWD"
-pytest
+export PYTHONPATH=.
+py.test
