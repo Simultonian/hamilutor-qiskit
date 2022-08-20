@@ -8,12 +8,13 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes, fixme
 """Base class for Hamiltonian Simulation functionality."""
 
+from typing import Optional
 from qiskit import QuantumCircuit  # type: ignore
 from qiskit.circuit.library import PauliEvolutionGate  # type: ignore
-from qiskit.opflow import PauliSumOp  # type: ignore
+from .operator import Hamiltonian
 from .parser import Parser
 
 
@@ -23,35 +24,50 @@ class Constructor:
         out of a Hamiltonian.
     """
 
-    def __init__(self, method: str, optimizer=None, num_qubits=-1):
+    def __init__(self, method: str, circuit_optimizer=None,
+                 num_qubits=-1, hamiltonian_optimizer=None):
+        """
+            Base class for all the `qiskit` methods that can construct a
+            circuit out of a Hamiltonian.
+
+            Args:
+                - method: Method Name used for constructing the circuit
+                - circuit_optimizer:
+        """
         self.method = method
+        self.num_qubits = num_qubits
+        # TODO: Create a base class for circuit optimizers
+        self.circuit_optimizer = circuit_optimizer
+        # TODO: Create a base class for Hamiltonian optimizer
+        self.hamiltonian_optimizer = hamiltonian_optimizer
+
+        self.parser = Parser()
+
         self.hamiltonian = ""
         self.circuit = None
         self.synthesizer = None
-        self.circuit_optimizer = optimizer
-        self.parser = Parser()
-        self.pauli_op = None
-        self.num_qubits = num_qubits
+        self.pauli_op: Optional[Hamiltonian] = None
 
     def load_hamiltonian(self, hamiltonian: str, optimizer=None):
         """Load given Hamiltonian
 
-        Loads the given Hamiltonian from the folder `hamiltonian/`.
-        Hamiltonian when read from a file can further be optimized
+        Loads the given Hamiltonian. Hamiltonian when read from a file can
+        further be optimized.
 
+        # TODO: Create a base class for Hamiltonian optimizer
         Args:
-            - hamiltonian: name of the hamiltonian file
+            - hamiltonian: path of the file.
             - optimizer: callable that will take in the pauli_op and optimize
                          it.
         """
         self.hamiltonian = hamiltonian
-        pauli_op: PauliSumOp = self.parser(hamiltonian)
+        pauli_op: Hamiltonian = self.parser(hamiltonian)
         if optimizer is not None:
             pauli_op = optimizer(pauli_op)
 
         self.pauli_op = pauli_op
 
-    def load_hamiltonian_string(self, h_string: str, optimizer=None):
+    def load_hamiltonian_string(self, h_string: str):
         """Load given Hamiltonian
 
         Loads the given Hamiltonian from the folder `hamiltonian/`.
@@ -62,9 +78,9 @@ class Constructor:
             - optimizer: callable that will take in the pauli_op and optimize
                          it.
         """
-        pauli_op: PauliSumOp = self.parser.parse_pauli(h_string)
-        if optimizer is not None:
-            pauli_op = optimizer(pauli_op)
+        pauli_op: Hamiltonian = self.parser.parse_pauli(h_string)
+        if self.hamiltonian_optimizer is not None:
+            pauli_op = self.hamiltonian_optimizer(pauli_op)
 
         self.pauli_op = pauli_op
 

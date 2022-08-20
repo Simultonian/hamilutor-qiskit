@@ -8,9 +8,12 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+# pylint: disable=fixme
 """Base class for Parser across frameworks"""
 from typing import List
 from qiskit.opflow import PauliSumOp  # type: ignore
+
+from .operator import Hamiltonian
 from ..baseparser import BaseParser
 
 
@@ -42,7 +45,7 @@ class Parser(BaseParser):
         super().__init__("qiskit")
         self.formats: List[str] = ["pauli"]
 
-    def parse_pauli(self, file_contents: str) -> PauliSumOp:
+    def parse_pauli(self, file_contents: str) -> Hamiltonian:
         """Parse given string
 
         Given string is formatted into a `PauliSumOp` given the format
@@ -59,15 +62,15 @@ class Parser(BaseParser):
         try:
             for line in lines:
                 coeff, axis = line.split(" ")
-                coeff = coeff.replace(" ", "")
-                coeff = coeff.replace("i", "j")
+                coeff = coeff.replace(" ", "").replace("i", "j")
 
                 axis = axis.strip()
                 pauli_pairs.append((axis, coeff))
         except TypeError as err:
             raise TypeError("Invalid file format") from err
 
-        return PauliSumOp.from_list(pauli_pairs)
+        # TODO fix typing
+        return Hamiltonian.from_list(pauli_pairs)  # type: ignore
 
     def __call__(self, file: str) -> PauliSumOp:
         """Parse given file
