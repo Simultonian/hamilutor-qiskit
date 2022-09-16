@@ -54,6 +54,7 @@ repos:
         types: [python]
         args:
           - "--recursive"
+          - "--rcfile=.pylintrc"
           - "y"
           - "."
   
