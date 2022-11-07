@@ -12,8 +12,11 @@
 """Base class for Hamiltonian Simulation functionality."""
 
 from typing import Optional
+
 from qiskit import QuantumCircuit  # type: ignore
 from qiskit.circuit.library import PauliEvolutionGate  # type: ignore
+
+from .circuit_optimizer import CircuitOptimizer
 from .operator import Hamiltonian
 from .parser import Parser
 
@@ -24,8 +27,12 @@ class Constructor:
         out of a Hamiltonian.
     """
 
-    def __init__(self, method: str, circuit_optimizer=None,
-                 num_qubits=-1, hamiltonian_optimizer=None):
+    def __init__(
+            self,
+            method: str,
+            circuit_optimizer: Optional[CircuitOptimizer] = None,
+            hamiltonian_optimizer=None,
+            num_qubits=-1):
         """
             Base class for all the `qiskit` methods that can construct a
             circuit out of a Hamiltonian.
@@ -36,7 +43,6 @@ class Constructor:
         """
         self.method = method
         self.num_qubits = num_qubits
-        # TODO: Create a base class for circuit optimizers
         self.circuit_optimizer = circuit_optimizer
         # TODO: Create a base class for Hamiltonian optimizer
         self.hamiltonian_optimizer = hamiltonian_optimizer
@@ -90,7 +96,7 @@ class Constructor:
         """
         raise NotImplementedError("Accessing superclass is not allowed")
 
-    def get_circuit(self) -> QuantumCircuit:
+    def get_circuit(self, optimize=False) -> QuantumCircuit:
         """Get Hamiltonian circuit.
 
         Get the higher level circuit for the Hamiltonian.
@@ -100,8 +106,10 @@ class Constructor:
         Returns:
             Quantum Circuit for the loaded hamiltonian.
         """
+        if self.pauli_op is None:
+            raise AttributeError("Pauli operator has not been set")
         evo_gate = PauliEvolutionGate(
-            self.pauli_op, 1.0, synthesis=self.synthesizer)
+            self.pauli_op.pauli_sum_op, 1.0, synthesis=self.synthesizer)
 
         if self.num_qubits == -1:
             num_qubits = evo_gate.num_qubits
@@ -110,5 +118,10 @@ class Constructor:
         circ = QuantumCircuit(self.num_qubits)
         circ.append(evo_gate, list(range(self.num_qubits)))
 
+        if optimize:
+            assert self.circuit_optimizer is not None, \
+                "Circuit to be optimized but not optimizer defined"
+            circ = self.circuit_optimizer(circ)
+
         self.circuit = circ
-        return circ
+        return self.circuit

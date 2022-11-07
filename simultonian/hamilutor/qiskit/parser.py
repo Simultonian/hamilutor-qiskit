@@ -11,10 +11,9 @@
 # pylint: disable=fixme
 """Base class for Parser across frameworks"""
 from typing import List
-from qiskit.opflow import PauliSumOp  # type: ignore
 
-from .operator import Hamiltonian
 from ..baseparser import BaseParser
+from .operator import Hamiltonian
 
 
 class Parser(BaseParser):
@@ -72,7 +71,7 @@ class Parser(BaseParser):
         # TODO fix typing
         return Hamiltonian.from_list(pauli_pairs)  # type: ignore
 
-    def __call__(self, file: str) -> PauliSumOp:
+    def __call__(self, file: str) -> Hamiltonian:
         """Parse given file
 
         Read the file and parse into a `PauliSumOp` if the format is
@@ -83,7 +82,7 @@ class Parser(BaseParser):
         Raises:
             - TypeError: File format not supported.
         """
-        extension, string = super().__call__(file)
+        extension, string = self.base_parse(file)
 
         # since `pauli` is the only format.
         assert extension == "pauli"
