@@ -1,0 +1,35 @@
+# This code is part of Simultonian
+#
+# This code is licensed under the Apache License, Version 2.0. You may
+# obtain a copy of this license in the LICENSE.txt file in the root directory
+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# Any modifications or derivative works of this code must retain this
+# copyright notice, and modified files need to carry a notice indicating
+# that they have been altered from the originals.
+
+# pylint: disable=too-many-instance-attributes, fixme
+"""Base class for Circuit optimizer."""
+
+from qiskit import QuantumCircuit  # type: ignore
+
+
+class CircuitOptimizer:
+
+    def __init__(self, name: str = "base"):
+        """
+            Base Class for optimizer that makes changes to the circuit.
+            These optimizers can be treated as passes that can be used in
+            sequence.
+
+            Args:
+                - name: Name of optimization
+        """
+        self.name = name
+
+    def __call__(self, circuit: QuantumCircuit) -> QuantumCircuit:
+        """
+        Run the optimization on the given circuit
+        """
+        raise NotImplementedError(
+            "Accessing superclass for optmizer is not allowed")

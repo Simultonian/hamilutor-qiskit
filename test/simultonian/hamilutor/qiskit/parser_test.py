@@ -9,12 +9,13 @@
 # that they have been altered from the originals.
 """Simple tests for testing the parsing capacity of `Parser`"""
 
-from typing import List, Tuple
 import os
+from typing import List, Tuple
+
 import pytest
+from qiskit.opflow import PauliSumOp  # type: ignore
 from testfixtures import TempDirectory  # type: ignore
 
-from qiskit.opflow import PauliSumOp  # type: ignore
 from simultonian.hamilutor.qiskit import Parser
 
 
@@ -39,7 +40,7 @@ def test_hamiltonian(string: str, pauli_list: List[Tuple[str, complex]]):
 
         new_file_name = os.path.join(temp_dir.path, file_name)
 
-        result = parser(str(new_file_name))
+        result = parser(str(new_file_name)).pauli_sum_op
 
     expected_result = PauliSumOp.from_list(pauli_list)
 

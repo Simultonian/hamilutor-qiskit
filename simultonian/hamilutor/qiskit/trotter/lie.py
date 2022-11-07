@@ -9,7 +9,11 @@
 # that they have been altered from the originals.
 
 """Lie Trotter functionality for constructing circuits."""
+from typing import Optional
+
 from qiskit.synthesis import LieTrotter
+
+from ..circuit_optimizer import CircuitOptimizer
 from ..constructor import Constructor
 
 
@@ -17,8 +21,14 @@ class Lie(Constructor):
     """Lie Trotter method
     """
 
-    def __init__(self, optimizer=None, num_qubits: int = -1, order: int = 1):
-        super().__init__("SUZUKI", optimizer, num_qubits)
+    def __init__(
+            self,
+            circuit_optimizer: Optional[CircuitOptimizer] = None,
+            hamiltonian_optimizer=None,
+            num_qubits: int = -1,
+            order: int = 1):
+        super().__init__("SUZUKI", circuit_optimizer, hamiltonian_optimizer,
+                         num_qubits)
 
         assert order > 0, "Incorrect order."
         self.order = order

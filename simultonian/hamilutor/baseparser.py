@@ -41,7 +41,17 @@ class BaseParser:
         self.framework = framework
         self.formats: List[str] = []
 
-    def __call__(self, file_name: str) -> Tuple[str, str]:
+    def base_parse(self, file_name: str) -> Tuple[str, str]:
+        """Base parse the file
+        Common parser that will be used by all the frameworks to read the file
+        and return it's extension
+
+        Args:
+            file_name: Name of the file to be parsed.
+        Raises:
+            TypeError/AttributeError: Invalid file naming convention.
+            NotImplementedError: File extension is not supported in the lib.
+        """
         try:
             extension = file_name.split(".")[-1]
 
