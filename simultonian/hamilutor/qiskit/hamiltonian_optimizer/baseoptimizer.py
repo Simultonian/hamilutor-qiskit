@@ -9,16 +9,16 @@
 # that they have been altered from the originals.
 
 # pylint: disable=too-many-instance-attributes, fixme
-"""Base class for Circuit optimizer."""
+"""Base class for Hamiltonian optimizer."""
 
-from qiskit import QuantumCircuit  # type: ignore
+from ..operator import Hamiltonian
 
 
 class Optimizer:
 
     def __init__(self, name: str = "base"):
         """
-            Base Class for optimizer that makes changes to the circuit.
+            Base Class for optimizer that makes changes to Hamiltonian.
             These optimizers can be treated as passes that can be used in
             sequence.
 
@@ -27,9 +27,10 @@ class Optimizer:
         """
         self.name = name
 
-    def __call__(self, circuit: QuantumCircuit) -> QuantumCircuit:
+    def __call__(self, h: Hamiltonian):
         """
-        Run the optimization on the given circuit
+        Run the optimization on the given Hamiltonian. The changes are made
+        in-place so no value is returned.
         """
         raise NotImplementedError(
             "Accessing superclass for optmizer is not allowed")

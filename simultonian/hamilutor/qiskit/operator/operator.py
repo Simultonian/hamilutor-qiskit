@@ -85,6 +85,9 @@ class Hamiltonian:
         self._pauli_op = value
         self._update = False
 
+    def __len__(self) -> int:
+        return len(self._raw)
+
     def permute(self, permutation: list[int]) -> None:
         """
         Permute the ordering of the terms in Hamiltonian.
