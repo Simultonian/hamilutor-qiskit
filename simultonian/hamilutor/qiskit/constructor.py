@@ -67,28 +67,40 @@ class Constructor:
                          it.
         """
         self.hamiltonian = hamiltonian
-        pauli_op: Hamiltonian = self.parser(hamiltonian)
+        self.pauli_op = self.parser(hamiltonian)
+
         if optimizer is not None:
-            pauli_op = optimizer(pauli_op)
+            optimizer(self.pauli_op)
 
-        self.pauli_op = pauli_op
-
-    def load_hamiltonian_string(self, h_string: str):
+    def load_hamiltonian_string(self, h_string: str, optimizer=None):
         """Load given Hamiltonian
 
         Loads the given Hamiltonian from the folder `hamiltonian/`.
         Hamiltonian when read from a file can further be optimized
 
         Args:
-            - hamiltonian: name of the hamiltonian file
+            - hamiltonian: hamiltonian string
             - optimizer: callable that will take in the pauli_op and optimize
                          it.
         """
-        pauli_op: Hamiltonian = self.parser.parse_pauli(h_string)
-        if self.hamiltonian_optimizer is not None:
-            pauli_op = self.hamiltonian_optimizer(pauli_op)
+        self.pauli_op = self.parser.parse_pauli(h_string)
+        if optimizer is not None:
+            optimizer(self.pauli_op)
 
-        self.pauli_op = pauli_op
+        elif self.hamiltonian_optimizer is not None:
+            self.hamiltonian_optimizer(self.pauli_op)
+
+    def optimize_hamiltonian(self, optimizer=None):
+        """
+        Run the given optimizer on the Hamiltonian. If no optimizer is not
+        passed then the method will use self.hamiltonian_optimizer.
+        """
+        if optimizer is None:
+            if self.hamiltonian_optimizer is None:
+                raise ValueError("Hamiltonian Optimizer was not passed.")
+            self.hamiltonian_optimizer(self.pauli_op)
+        else:
+            optimizer(self.pauli_op)
 
     def re_init(self):
         """
