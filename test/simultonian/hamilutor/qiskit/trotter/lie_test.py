@@ -17,6 +17,8 @@ from qiskit.transpiler import PassManager
 from qiskit.quantum_info import Operator
 
 from simultonian.hamilutor.qiskit import Lie
+from simultonian.hamilutor.qiskit import Parser
+from simultonian.hamilutor.qiskit.sampler import Identity
 
 
 def _decompose_circuit(
@@ -39,14 +41,32 @@ def _construct_circuit(qubits: int, gates) -> QuantumCircuit:
 
 
 @pytest.mark.parametrize(['h_str', 'gates', 'qubits'], [
-    ("""1 Z""", [('u', (0, 0, 2, 0))], 1),
+    ("""1.0 Z""", [('u', (0, 0, 2, 0))], 1),
+    ("""1.0 XX""", [
+        # Diagonalization
+        ('u', (1.5707963267948966, 0, 3.141592653589793, 0)),
+        ('u', (1.5707963267948966, 0, 3.141592653589793, 1)),
+        # Exponentiation
+        ('cx', (0, 1)),
+        ('u', (0, 0, 2, 1)),
+        ('cx', (0, 1)),
+        # Re-Diagonalization
+        ('u', (1.5707963267948966, 0, 3.141592653589793, 0)),
+        ('u', (1.5707963267948966, 0, 3.141592653589793, 1)),
+    ], 2),
 ])
-def test_lie(h_str: str, gates, qubits: int):
+def test_lie_simple(h_str: str, gates, qubits: int):
     """
     Validity of Circuit constructed for `H = P`
     """
-    lie = Lie()
-    lie.load_hamiltonian_string(h_str)
-    circ = _decompose_circuit(lie.get_circuit())
+    parser = Parser()
+    parser.load(h_str)
+
+    hamiltonian = Identity()
+    hamiltonian.load(parser.roll())
+
+    lie = Lie(num_qubits=qubits)
+    lie.load(hamiltonian)
+    circ = _decompose_circuit(lie.roll())
     expected_circ = _construct_circuit(qubits, gates)
     assert Operator(circ).equiv(Operator(expected_circ))

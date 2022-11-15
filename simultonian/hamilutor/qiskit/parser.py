@@ -10,15 +10,23 @@
 
 # pylint: disable=fixme
 """Base class for Parser across frameworks"""
-from typing import List
+from typing import Iterable, List, Tuple
 
 from ..baseparser import BaseParser
-from .operator import Hamiltonian
+
+PauliRaw = Tuple[str, complex]
+PauliSequence = List[PauliRaw]
+
+"""
+Type for the unit of manipulation in the sampler
+"""
+PauliSequencesList = List[PauliSequence]
 
 
 class Parser(BaseParser):
     """
-        Parser to parse hamiltonians into qiskit objects.
+        Sampler that will load the file and serves as a distribution for
+        the Hamiltonian terms.
 
         =================
         Formats supported
@@ -43,12 +51,66 @@ class Parser(BaseParser):
     def __init__(self) -> None:
         super().__init__("qiskit")
         self.formats: List[str] = ["pauli"]
+        self._data: PauliSequencesList = []
 
-    def parse_pauli(self, file_contents: str) -> Hamiltonian:
+    @property
+    def data(self) -> PauliSequencesList:
+        return self._data
+
+    @data.setter
+    def data(self, _new_data):
+        raise AttributeError("Data of Parser can only be read.")
+
+    def load(self, string: str, is_file: bool = False) -> None:
+        """Parse
+
+        The given string can either be a file or the content itself that must
+        be parsed. This will be judged based on the value given to `is_file`.
+
+        Args:
+            - string: string that represents the file name or content.
+            - is_file: value that will determine if the string given is file
+                       name or content.
+        Raises:
+            - TypeError: File format is invalid.
+            - NotImplementedError: File extension is not supported in the lib.
+        """
+        if is_file:
+            extension, content = self.base_parse(string)
+
+            # since `pauli` is the only format.
+            assert extension == "pauli"
+            self.parse_pauli(content)
+        else:
+            self.parse_pauli(string)
+
+    def roll(self) -> PauliSequencesList:
+        """Roll the Data
+
+        All the parsed data will be rolled forward to the caller.
+
+        Returns:
+            - Pauli pair
+        """
+        return self.data
+
+    def sample(self) -> Iterable[PauliSequence]:
+        """Sample Paulis
+
+        Samples the Pauli elements from the Parsed file. The samples are
+        present in order and are only repeated once all the elements are
+        exhausted.
+
+        Returns:
+            - Iterable of PauliRaw
+        """
+        for pauli in self.data:
+            yield pauli
+
+    def parse_pauli(self, file_contents: str) -> None:
         """Parse given string
 
-        Given string is formatted into a `PauliSumOp` given the format
-        of the string is of `.pauli`.
+        Given string is formatted into [Pauli, coeff] format.
 
         Args:
             - file_contents: string to parse
@@ -60,30 +122,12 @@ class Parser(BaseParser):
 
         try:
             for line in lines:
-                coeff, axis = line.split(" ")
-                coeff = coeff.replace(" ", "").replace("i", "j")
+                _coeff, axis = line.split(" ")
+                coeff = complex(_coeff.replace(" ", "").replace("i", "j"))
 
                 axis = axis.strip()
-                pauli_pairs.append((axis, coeff))
+                pauli_pairs.append([(axis, coeff)])
         except TypeError as err:
             raise TypeError("Invalid file format") from err
 
-        # TODO fix typing
-        return Hamiltonian.from_list(pauli_pairs)  # type: ignore
-
-    def __call__(self, file: str) -> Hamiltonian:
-        """Parse given file
-
-        Read the file and parse into a `PauliSumOp` if the format is
-        acceptable.
-
-        Args:
-            - file: file name
-        Raises:
-            - TypeError: File format not supported.
-        """
-        extension, string = self.base_parse(file)
-
-        # since `pauli` is the only format.
-        assert extension == "pauli"
-        return self.parse_pauli(string)
+        self._data = pauli_pairs

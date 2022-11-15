@@ -13,12 +13,13 @@ from typing import List, Optional, Union
 
 import pytest
 from qiskit import QuantumCircuit  # type: ignore
-from qiskit.quantum_info import Operator
 from qiskit.transpiler import PassManager
 from qiskit.transpiler.passes import Unroller
 
-from simultonian.hamilutor.qiskit import Lie
-from simultonian.hamilutor.qiskit.circuit_optimizer import Dummy
+from simultonian.hamilutor.qiskit import Lie, Parser
+from simultonian.hamilutor.qiskit.sampler import Identity as SamplerIdentity
+from simultonian.hamilutor.qiskit.circuit_optimizer import (
+    Identity as CircuitIdentity)
 
 
 def _decompose_circuit(
@@ -33,21 +34,29 @@ def _decompose_circuit(
 
 
 @pytest.mark.parametrize(['h_str'], [("""1 Z""",)])
-def test_dummy_same_constructor(h_str: str):
+def test_identity_same_constructor(h_str: str):
     """
     Validity of Circuit constructed for `H = P`
     """
-    optimizer = Dummy()
-    lie = Lie(circuit_optimizer=optimizer)
-    lie.load_hamiltonian_string(h_str)
+    parser = Parser()
+    parser.load(h_str)
 
-    circ = _decompose_circuit(lie.get_circuit())
-    optimized_circ = _decompose_circuit(lie.get_circuit(optimize=True))
-    assert Operator(circ).equiv(Operator(optimized_circ))
+    hamiltonian = SamplerIdentity()
+    hamiltonian.load(parser.roll())
+
+    lie = Lie(num_qubits=1)
+    lie.load(hamiltonian)
+    circ = lie.roll()
+
+    optimizer = CircuitIdentity()
+    optimized_circ = optimizer(circ)
+
+    for x, y in zip(circ, optimized_circ):
+        assert x == y
 
 
-def test_dummy_non_circuit():
-    optimizer = Dummy()
+def test_identity_non_circuit():
+    optimizer = CircuitIdentity()
 
     with pytest.raises(ValueError, match="Incorrect type"):
         optimizer(None)

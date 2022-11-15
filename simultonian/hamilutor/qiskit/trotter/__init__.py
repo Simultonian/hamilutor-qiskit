@@ -11,7 +11,5 @@
 """Main Trotterization functionality."""
 
 from .lie import Lie
-from .qdrift import Qdrift
-from .suzuki import Suzuki
 
-__all__ = ['Suzuki', 'Lie', 'Qdrift']
+__all__ = ['Lie']

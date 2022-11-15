@@ -13,7 +13,6 @@
     them using qiskit functionality.
 """
 
-from .baseoptimizer import CircuitOptimizer
-from .dummyoptimizer import Dummy
+from .identity import Identity
 
-__all__ = ["Dummy", "CircuitOptimizer"]
+__all__ = ["Identity"]

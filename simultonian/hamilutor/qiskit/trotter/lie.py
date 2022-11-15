@@ -9,42 +9,50 @@
 # that they have been altered from the originals.
 
 """Lie Trotter functionality for constructing circuits."""
-from typing import Optional
+
+from qiskit import QuantumCircuit
+from ..circuit_maker import CircuitMaker
+from ..sampler import Identity
+from ..parser import PauliSequence
 
 from qiskit.synthesis import LieTrotter
+from qiskit.opflow import PauliSumOp
+from qiskit.circuit.library import PauliEvolutionGate
 
-from ..circuit_optimizer import CircuitOptimizer
-from ..constructor import Constructor
 
-
-class Lie(Constructor):
+class Lie(CircuitMaker):
     """Lie Trotter method
+
+       Using the standard method that is in-built in qiskit.
     """
 
-    def __init__(
-            self,
-            circuit_optimizer: Optional[CircuitOptimizer] = None,
-            hamiltonian_optimizer=None,
-            num_qubits: int = -1,
-            order: int = 1):
-        super().__init__("SUZUKI", circuit_optimizer, hamiltonian_optimizer,
-                         num_qubits)
+    def __init__(self, num_qubits: int = -1):
+        super().__init__("LIE", num_qubits)
 
-        assert order > 0, "Incorrect order."
-        self.order = order
-
-        self.re_init()
-
-    def re_init(self, _reps: int = 1):
-        """Re-initialize synthesizer
-        Re-initializes the synthesizer with new number of reps.
+    def load(self, sampler: Identity, **kwargs) -> None:
+        """Load the Sampler
 
         Args:
-            _reps: Number of times QDRIFT must be repeated in the circuit.
-        Raises:
-            AssertionError: Incorrect rep count.
-            AssertionError: QDrift could not construct circuit.
+            - sampler: Sampler that will let the circuit maker get
+                       PauliSequences.
         """
-        assert _reps > 0, "Incorrect number of reps provided"
-        self.synthesizer = LieTrotter(reps=_reps)
-        assert self.synthesizer is not None, "Error constructing the circuit."
+        reps = kwargs.get('reps', 1)
+        time = kwargs.get('t', 1.0)
+
+        pauli_list: PauliSequence = [pauli for pauli_seq in sampler.sample()
+                                     for pauli in pauli_seq]
+        pauli_op = PauliSumOp.from_list(pauli_list)
+
+        # TODO Look into `atomic_evolution` argument that can be used
+        synthesizer = LieTrotter(reps=reps)
+        evo_gate = PauliEvolutionGate(pauli_op, time, synthesis=synthesizer)
+        if self.num_qubits == -1:
+            self.num_qubits = int(evo_gate.num_qubits)
+
+        circ = QuantumCircuit(self.num_qubits)
+        circ.append(evo_gate, list(range(self.num_qubits)))
+
+        self.circuit = circ
+
+    def roll(self) -> QuantumCircuit:
+        return self.circuit

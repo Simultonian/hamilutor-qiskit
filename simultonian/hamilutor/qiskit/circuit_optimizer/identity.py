@@ -8,23 +8,16 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Dummy Hamiltonian Optimizer"""
-
-from ..operator import Hamiltonian
-from .baseoptimizer import Optimizer
+"""Lie Trotter functionality for constructing circuits."""
+from qiskit import QuantumCircuit  # type: ignore
 
 
-class Dummy(Optimizer):
-    """Dummy Optimizer that will just reverse the order of the Hamiltonian
-       terms.
-   """
+class Identity:
+    """Identity Optimizer that will make no changes to the circuit.
+    """
 
-    def __init__(self):
-        super().__init__("DUMMY")
-
-    def __call__(self, h: Hamiltonian):
-        """Dummy Optimizer
-
+    def __call__(self, circuit: QuantumCircuit):
+        """
         Return the same circuit
 
         Args:
@@ -32,7 +25,6 @@ class Dummy(Optimizer):
         Raises:
             AssertionError: circuit is not QuantumCircuit.
         """
-        if not isinstance(h, Hamiltonian):
+        if not isinstance(circuit, QuantumCircuit):
             raise ValueError("Incorrect type at dummy optimizer")
-        reverse_permute = list(reversed(range(len(h))))
-        h.permute(reverse_permute)
+        return circuit

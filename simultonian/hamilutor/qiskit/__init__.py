@@ -14,7 +14,8 @@
     backend framework for hamilutor which will be used for constructing
     primary circuits before framework based optimizations are applied.
 """
-from .trotter import Lie, Suzuki, Qdrift
+from .trotter import Lie
 from .parser import Parser
+from .sampler import Identity
 
-__all__ = ['Lie', 'Suzuki', 'Qdrift', 'Parser']
+__all__ = ['Lie', 'Parser', 'Identity']

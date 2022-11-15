@@ -9,11 +9,10 @@
 # that they have been altered from the originals.
 
 """
-    circuit_optimizer is a sub-module that will take in circuits and optimize
-    them using qiskit functionality.
+    Sampler that will serve as the basis for all the optimizers
+    and the Hamiltonian itself.
 """
 
-from .baseoptimizer import Optimizer
-from .dummyoptimizer import Dummy
+from .identity import Identity
 
-__all__ = ["Dummy", "Optimizer"]
+__all__ = ["Identity"]

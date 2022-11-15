@@ -13,21 +13,20 @@ import os
 from typing import List, Tuple
 
 import pytest
-from qiskit.opflow import PauliSumOp  # type: ignore
 from testfixtures import TempDirectory  # type: ignore
 
 from simultonian.hamilutor.qiskit import Parser
 
 
-@pytest.mark.parametrize(['string', 'pauli_list'], [
+@pytest.mark.parametrize(['string', 'pauli_set'], [
     ("""-0.2 ZI\n-0.1 IX""",
-     [("ZI", complex(-0.2, 0)), ("IX", complex(-0.1, 0))]),
+     {("ZI", complex(-0.2, 0)), ("IX", complex(-0.1, 0))}),
     ("""-0.2j ZI\n-0.1 IX""",
-     [("ZI", complex(0, -0.2)), ("IX", complex(-0.1, 0))]),
+     {("ZI", complex(0, -0.2)), ("IX", complex(-0.1, 0))}),
     ("""-0.2i ZI\n-0.1 IX""",
-     [("ZI", complex(0, -0.2)), ("IX", complex(-0.1, 0))])
+     {("ZI", complex(0, -0.2)), ("IX", complex(-0.1, 0))})
 ])
-def test_hamiltonian(string: str, pauli_list: List[Tuple[str, complex]]):
+def test_hamiltonian(string: str, pauli_set: List[Tuple[str, complex]]):
     """
     Checks if the qiskit parser is able to load a hamiltonian
     """
@@ -40,8 +39,14 @@ def test_hamiltonian(string: str, pauli_list: List[Tuple[str, complex]]):
 
         new_file_name = os.path.join(temp_dir.path, file_name)
 
-        result = parser(str(new_file_name)).pauli_sum_op
+        parser.load(str(new_file_name), True)
 
-    expected_result = PauliSumOp.from_list(pauli_list)
+    # Checking roll
+    result = parser.roll()
+    for pauli in result:
+        # The return value is a list with one element
+        assert pauli[0] in pauli_set
 
-    assert result == expected_result
+    # Checking sample
+    for pauli in parser.sample():
+        assert pauli[0] in pauli_set
