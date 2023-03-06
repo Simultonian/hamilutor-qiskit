@@ -1,0 +1,63 @@
+repos:
+  # Collection of basic hooks for pre-commit
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: check-case-conflict
+      - id: check-yaml
+      - id: debug-statements
+      - id: requirements-txt-fixer
+
+  # Hook to sort import statements
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        name: isort
+
+
+  # Hook to run flake8 (a wrapper around other hooks)
+  - repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+      - id: flake8
+        # name: flake8
+        # entry: flake8
+        # language: system
+        # types: [python]
+        additional_dependencies: [flake8-bugbear, flake8-print]
+        args:
+          - --count
+          - --show-source 
+          - --statistics
+          - --count 
+          - --exit-zero 
+          - --max-complexity=10 
+          - --statistics
+
+  # Hook to check static types
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.940
+    hooks:
+      - id: mypy
+        # additional_dependencies: [tokenize-rt==3.2.0]
+        types: [python]
+
+  # Hook for static code analyser
+  - repo: https://github.com/pycqa/pylint
+    rev: pylint-2.6.0
+    hooks:
+      - id: pylint
+        # language: system
+        types: [python]
+        args:
+          - "y"
+          - "."
+  
+  # Ensuring pep8 standards
+  - repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v1.6.0
+    hooks:
+    - id: autopep8
