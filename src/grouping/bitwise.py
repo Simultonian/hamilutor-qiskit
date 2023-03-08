@@ -1,7 +1,7 @@
 def commutes(pauli_list, pauli_a) -> bool:
     """
-        Checks if the given pauli operator commutes with the rest of the
-        elements in the set.
+    Checks if the given pauli operator commutes with the rest of the
+    elements in the set.
     """
     for pauli_b in pauli_list:
         for a, b in zip(pauli_a, pauli_b):
@@ -9,6 +9,7 @@ def commutes(pauli_list, pauli_a) -> bool:
                 continue
             return False
     return True
+
 
 def bitwise_group(pauli_list: list[str]) -> list[list[str]]:
     """Creating the pauli groups as a list of strings.
@@ -26,6 +27,7 @@ def bitwise_group(pauli_list: list[str]) -> list[list[str]]:
         else:
             groups.append([pauli])
     return groups
+
 
 def bitwise_representor(pauli_list: list[str]) -> str:
     """
@@ -46,31 +48,32 @@ def bitwise_representor(pauli_list: list[str]) -> str:
     """
     if len(pauli_list) == 0:
         raise ValueError("Empty Group, no representation can be made.")
-    repr_str = ['i'] * len(pauli_list[0])
+    repr_str = ["i"] * len(pauli_list[0])
 
     for pauli in pauli_list:
         for i, a in enumerate(pauli):
-            if a != 'i':
+            if a != "i":
                 repr_str[i] = a
 
     return "".join(repr_str)
 
 
 DIAGONAL_GATES = {
-        "i": "i",
-        "x": "h",
-        "y": "hs",
-        "z": "i",
-        }
+    "i": "i",
+    "x": "h",
+    "y": "hs",
+    "z": "i",
+}
 
 DIAGONAL_PAULIS = {
-        "i": (1.0, "i"),
-        "x": (1.0, "z"),
-        "y": (-1.0, "z"),
-        "z": (1.0, "z"),
-    }
+    "i": (1.0, "i"),
+    "x": (1.0, "z"),
+    "y": (-1.0, "z"),
+    "z": (1.0, "z"),
+}
 
-def bitwise_gate(repr_str:str) -> list[str]:
+
+def bitwise_gate(repr_str: str) -> list[str]:
     """
     Given Pauli representor string, we return the set of gates for each
     position that will diagonalize all the Pauli operators in the commutable
@@ -83,9 +86,9 @@ def bitwise_gate(repr_str:str) -> list[str]:
     return [DIAGONAL_GATES[x] for x in repr_str]
 
 
-def bitwise_operator_convertor(pauli:str) -> tuple[float, str]:
+def bitwise_operator_convertor(pauli: str) -> tuple[float, str]:
     """
-    Given the Pauli operator, the return value represents the Pauli operator 
+    Given the Pauli operator, the return value represents the Pauli operator
     that we will obtain after the operator has been diagonalized.
 
     Input:
