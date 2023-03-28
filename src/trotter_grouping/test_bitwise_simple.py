@@ -1,6 +1,7 @@
 import pytest
 from qiskit import QuantumCircuit
-from ..trotter.simple import trotter, _circuit_eq
+from ..trotter.simple import trotter
+from ..utils import circuit_eq
 from .bitwise_simple import bitwise_simple, _circuit_constructor, group_trotter
 
 def test_circuit_constructor():
@@ -21,8 +22,8 @@ def test_circuit_constructor():
     _ = expected_dag.h(2), expected_dag.sdg(2)
     expected_dag.h(5)
 
-    assert _circuit_eq(result, expected)
-    assert _circuit_eq(result_dag, expected_dag)
+    assert circuit_eq(result, expected)
+    assert circuit_eq(result_dag, expected_dag)
 
 
 def test_single_group_trotter():
@@ -44,7 +45,7 @@ def test_single_group_trotter():
     expected.h(0)
     expected.h(1)
 
-    assert _circuit_eq(result, expected)
+    assert circuit_eq(result, expected)
 
 
 def test_bitwise_simple_single_group():
@@ -69,7 +70,7 @@ def test_bitwise_simple_single_group():
             expected.h(0)
             expected.h(1)
 
-        assert _circuit_eq(result, expected)
+        assert circuit_eq(result, expected)
 
 
 
@@ -101,4 +102,4 @@ def test_bitwise_simple_multiple_groups(h,groups,qubits):
                 expected = expected.compose(circuit)
 
 
-        assert _circuit_eq(result, expected)
+        assert circuit_eq(result, expected)

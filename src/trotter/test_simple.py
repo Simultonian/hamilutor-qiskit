@@ -1,6 +1,7 @@
 from qiskit import QuantumCircuit
 from qiskit.opflow import X, Y, Z, I
-from .simple import _qiskit_string_repr, _circuit_eq, trotter
+from ..utils import qiskit_string_repr, circuit_eq
+from .simple import trotter
 
 import pytest
 
@@ -19,7 +20,7 @@ gate_list = [["i", "i"], ["h", "i"], ["h", "hs"], ["i", "i"], ["i", "h"]]
 
 @pytest.mark.parametrize("h,q_obj", zip(repr_hams, q_objs))
 def test_qiskit_repr(h, q_obj):
-    result = eval(_qiskit_string_repr(h))
+    result = eval(qiskit_string_repr(h))
     assert result == q_obj
 
 
@@ -42,4 +43,4 @@ def test_trotter(h):
         cur = trotter({pauli: coeff})
         expected = expected.compose(cur)
 
-    assert _circuit_eq(expected, result)
+    assert circuit_eq(expected, result)
