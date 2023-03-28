@@ -28,7 +28,8 @@ def trotter(h: dict[str, float], t: float = 1.0, reps: int = 1) -> QuantumCircui
 
     Input:
         - h: Hamiltonian in Pauli basis along with coefficients
-        - t: time
+        - t: Time
+        - reps: The number of times to repeat trotterization steps.
     Returns: Quantum Circuit for simulation
     """
     hamiltonian = eval(_qiskit_string_repr(h))
