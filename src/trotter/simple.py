@@ -17,15 +17,17 @@ def trotter_from_terms(terms: list[tuple[str, float]]) -> QuantumCircuit:
     final_circuit = QuantumCircuit(num_qubits)
 
     for term in terms:
-        pauli_op = eval(qiskit_string_repr_pauli(term))
-        evolution_op = pauli_op.exp_i()
-        trotterized_op = PauliTrotterEvolution(trotter_mode="trotter").convert(
-            evolution_op
-        )
-        final_circuit = final_circuit.compose(trotterized_op.to_circuit())
+        final_circuit = final_circuit.compose(trotter_from_term(term))
 
     return final_circuit
 
+def trotter_from_term(term: tuple[str, float]) -> QuantumCircuit:
+    pauli_op = eval(qiskit_string_repr_pauli(term))
+    evolution_op = pauli_op.exp_i()
+    trotterized_op = PauliTrotterEvolution(trotter_mode="trotter").convert(
+        evolution_op
+    )
+    return trotterized_op.to_circuit()
 
 
 def trotter(h: dict[str, float], t: float = 1.0, reps: int = 1) -> QuantumCircuit:

@@ -1,7 +1,7 @@
 from qiskit import QuantumCircuit
 from qiskit.opflow import X, Y, Z, I
 from ..utils import qiskit_string_repr, circuit_eq
-from .simple import trotter, trotter_from_terms
+from .simple import trotter, trotter_from_terms, trotter_from_term
 
 import pytest
 
@@ -62,6 +62,25 @@ def test_from_terms(terms):
     for pauli, coeff in terms:
         cur = trotter({pauli: coeff})
         expected = expected.compose(cur)
+
+    assert circuit_eq(expected, result)
+
+
+term_list = [
+        ("xy", 1.0), 
+        ("iy", 2.0),
+        ("zz", -3.0),
+        ]
+
+@pytest.mark.parametrize("term", term_list)
+def test_from_term(term: tuple[str, float]):
+    num_qubits = len(term[0])
+
+    result = trotter_from_term(term)
+
+    expected = QuantumCircuit(num_qubits)
+    pauli, coeff = term
+    expected = trotter({pauli: coeff})
 
     assert circuit_eq(expected, result)
 
