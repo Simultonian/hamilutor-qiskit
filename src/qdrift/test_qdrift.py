@@ -12,14 +12,13 @@ hamiltonians = [
 ]
 
 order_list = [
-        ["iy", "iy", "iy", "iy", "xx", "iy", "xx", "iy"],
-        ["xi", "xi"], 
-        ]
+    ["iy", "iy", "iy", "iy", "xx", "iy", "xx", "iy"],
+    ["xi", "xi"],
+]
 
 
-
-@pytest.mark.parametrize("h,order", zip(hamiltonians,order_list))
-def test_qdrift(h,order):
+@pytest.mark.parametrize("h,order", zip(hamiltonians, order_list))
+def test_qdrift(h, order):
     # Setting random seed for testing
     np.random.seed(0)
 
