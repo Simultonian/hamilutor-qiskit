@@ -47,10 +47,11 @@ def test_trotter(h):
 
 
 terms_list = [
-        [("xy", 1.0), ("iy", 2.0)],
-        [("xi", 1.0), ("iy", 2.0), ("xi", 3.0)],
-        [("xi", 1.0), ("iy", 2.0), ("xi", 3.0), ("ii", -1.0)],
-        ]
+    [("xy", 1.0), ("iy", 2.0)],
+    [("xi", 1.0), ("iy", 2.0), ("xi", 3.0)],
+    [("xi", 1.0), ("iy", 2.0), ("xi", 3.0), ("ii", -1.0)],
+]
+
 
 @pytest.mark.parametrize("terms", terms_list)
 def test_from_terms(terms):
@@ -67,10 +68,11 @@ def test_from_terms(terms):
 
 
 term_list = [
-        ("xy", 1.0), 
-        ("iy", 2.0),
-        ("zz", -3.0),
-        ]
+    ("xy", 1.0),
+    ("iy", 2.0),
+    ("zz", -3.0),
+]
+
 
 @pytest.mark.parametrize("term", term_list)
 def test_from_term(term: tuple[str, float]):
@@ -83,4 +85,3 @@ def test_from_term(term: tuple[str, float]):
     expected = trotter({pauli: coeff})
 
     assert circuit_eq(expected, result)
-

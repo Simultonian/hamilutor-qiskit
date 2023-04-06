@@ -3,7 +3,7 @@ from ..trotter import trotter_from_term
 import numpy as np
 
 
-def qdrift(h: dict[str, float], t: float = 1.0, eps:float = 1.0) -> QuantumCircuit:
+def qdrift(h: dict[str, float], t: float = 1.0, eps: float = 1.0) -> QuantumCircuit:
     """
     API that takes Hamiltonian in a familiar format along with time and creates
     circuit that simulates the same using simple Trotterization.
@@ -25,7 +25,7 @@ def qdrift(h: dict[str, float], t: float = 1.0, eps:float = 1.0) -> QuantumCircu
     factor = lambd * t / N
 
     pauli_ops = [trotter_from_term((pauli, factor)) for pauli in paulis]
-    sampled_inds = np.random.choice(len(pauli_ops), size=N, p=weights/lambd)
+    sampled_inds = np.random.choice(len(pauli_ops), size=N, p=weights / lambd)
     sampled_terms = [pauli_ops[ind] for ind in sampled_inds]
 
     final_circuit = QuantumCircuit(num_qubits)
@@ -34,7 +34,6 @@ def qdrift(h: dict[str, float], t: float = 1.0, eps:float = 1.0) -> QuantumCircu
         final_circuit = final_circuit.compose(term)
 
     return final_circuit
-
 
 
 def qdrift_error(h: dict[str, float], t: float, r: int) -> float:
@@ -52,7 +51,7 @@ def qdrift_error(h: dict[str, float], t: float, r: int) -> float:
     weights = np.abs(coeffs)
     lambd = np.sum(weights)
 
-    nr = (l ** 2) * (lambd ** 2) * (t ** 2)
+    nr = (l**2) * (lambd**2) * (t**2)
     dr = 2 * r
 
     exp = np.exp(lambd * t * l / r)
