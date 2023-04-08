@@ -1,4 +1,38 @@
-def commutes(pauli_list, pauli_a) -> bool:
+from .grouper import Grouper
+
+
+class Bitwise(Grouper):
+    """
+    A class that will contain the bitwise grouping information for a single
+    Hamiltonian. This will make it easier to use and will reduce overhead cost
+    of calculating things repetitively. The original API will be allowed in use
+    in parallel in case the application does not need the entire functionality.
+    """
+
+    def __init__(self, pauli_list: set[str]):
+        self._commutable_sets = bitwise_group(pauli_list)
+        self.map_repr: dict[str, str] = {}
+
+        for comm_set in self._commutable_sets:
+            bitwise_repr = bitwise_representor(comm_set)
+            for pauli in comm_set:
+                self.map_repr[pauli] = bitwise_repr
+
+    def diagonalize(self, pauli_op: str) -> tuple[float, str]:
+        """
+        Gets the operator after it has been diagonlized by the circuit.
+        """
+        return bitwise_operator_convertor(pauli_op)
+
+    def circuit(self, pauli_op: str) -> list[str]:
+        """
+        Calls the gate constructor with the representor string stored. This
+        makes it easier for the user to access.
+        """
+        return bitwise_gate(self.map_repr[pauli_op])
+
+
+def commutes(pauli_list: set[str], pauli_a: str) -> bool:
     """
     Checks if the given pauli operator commutes with the rest of the
     elements in the set.
@@ -11,7 +45,7 @@ def commutes(pauli_list, pauli_a) -> bool:
     return True
 
 
-def bitwise_group(pauli_list: list[str]) -> list[list[str]]:
+def bitwise_group(pauli_list: set[str]) -> list[set[str]]:
     """Creating the pauli groups as a list of strings.
     Input:
         - pauli_list: List of strings representing the pauli operator.
@@ -29,7 +63,7 @@ def bitwise_group(pauli_list: list[str]) -> list[list[str]]:
     return groups
 
 
-def bitwise_representor(pauli_list: list[str]) -> str:
+def bitwise_representor(pauli_list: set[str]) -> str:
     """
     Get the Pauli string that represents the entire commuting Pauli set, we
     construct this by taking the preferred Pauli operator for each position,
@@ -48,7 +82,13 @@ def bitwise_representor(pauli_list: list[str]) -> str:
     """
     if len(pauli_list) == 0:
         raise ValueError("Empty Group, no representation can be made.")
-    repr_str = ["i"] * len(pauli_list[0])
+
+    x = ""
+    for a in pauli_list:
+        x = a
+        break
+
+    repr_str = ["i"] * len(x)
 
     for pauli in pauli_list:
         for i, a in enumerate(pauli):
