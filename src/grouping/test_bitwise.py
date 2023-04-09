@@ -4,6 +4,7 @@ from .bitwise import (
     bitwise_representor,
     bitwise_gate,
     bitwise_operator_convertor,
+    Bitwise,
 )
 
 pauli_lists = [
@@ -28,6 +29,10 @@ def test_commuting(pauli_list, grouped):
     result = bitwise_group(pauli_list)
     assert sorted(result) == sorted(grouped)
 
+    bitwise_grouper = Bitwise(pauli_list)
+
+    assert sorted(bitwise_grouper.groups) == sorted(grouped)
+
 
 comm_pauli_sets = [["zz", "ii"], ["xz", "xi", "ii"], ["ix", "xi"], ["ii"], ["ix", "ii"]]
 
@@ -49,6 +54,9 @@ def test_bitwise_gate(reprs, gates):
     result = bitwise_gate(reprs)
     assert sorted(result) == sorted(gates)
 
+    bitwise_grouper = Bitwise([reprs])
+    assert sorted(bitwise_grouper.circuit(reprs)) == sorted(gates)
+
 
 paulis = ["zz", "xz", "xy", "ii", "ix"]
 diags = [(1.0, "zz"), (1.0, "zz"), (-1.0, "zz"), (1.0, "ii"), (1.0, "iz")]
@@ -57,4 +65,9 @@ diags = [(1.0, "zz"), (1.0, "zz"), (-1.0, "zz"), (1.0, "ii"), (1.0, "iz")]
 @pytest.mark.parametrize("pauli,diag", zip(paulis, diags))
 def test_bitwise_conversion(pauli, diag):
     result = bitwise_operator_convertor(pauli)
+    assert result == diag
+
+    bitwise_grouper = Bitwise([])
+
+    result = bitwise_grouper.diagonalize(pauli)
     assert result == diag

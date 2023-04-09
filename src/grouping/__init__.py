@@ -3,4 +3,5 @@ from .bitwise import (
     bitwise_representor,
     bitwise_gate,
     bitwise_operator_convertor,
+    Bitwise,
 )
