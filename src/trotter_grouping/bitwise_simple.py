@@ -1,46 +1,9 @@
 from qiskit import QuantumCircuit
 
-from ..grouping.bitwise import (
-    bitwise_group,
-    bitwise_representor,
-    bitwise_gate,
-    bitwise_operator_convertor,
-)
+from ..grouping.bitwise import Bitwise
 
-from ..trotter.simple import trotter
-
-from ..utils import circuit_constructor
-
-
-def group_trotter(h: dict[str, float], t: float = 1.0) -> QuantumCircuit:
-    """
-    Runs simple Trotter for the case where all the elements of the Hamiltonian
-    are commuting Pauli operators. It uses rotation and exponentiation.
-
-    Inputs:
-        - h: Hamiltonian in dictionary form.
-        - t: Float representing time of evolution.
-    Returns: QuantumCircuit that will simulate the Hamiltonian
-    """
-
-    # Getting the group representation
-    representor = bitwise_representor(list(h.keys()))
-
-    # Getting the rotation and the anti-rotation circuit
-    rot_circuit = circuit_constructor(bitwise_gate(representor))
-    anti_rot_circuit = circuit_constructor(bitwise_gate(representor), True)
-
-    # Rotating the operators and then using them in Trotter.
-    rotated_operators = {}
-    for pauli, coeff in h.items():
-        coeff_c, new_pauli = bitwise_operator_convertor(pauli)
-        rotated_operators[new_pauli] = coeff * coeff_c
-
-    exp_circ = trotter(rotated_operators, t)
-
-    final_circuit = rot_circuit.compose(exp_circ)
-    final_circuit = final_circuit.compose(anti_rot_circuit)
-    return final_circuit
+from .group_trotter import generic
+from ..ordering import lexico
 
 
 def bitwise_simple(
@@ -48,7 +11,7 @@ def bitwise_simple(
 ) -> QuantumCircuit:
     """
     Takes in a Hamiltonian and constructs the simple Trotterization circuit
-    after grouping the terms together.
+    after grouping the terms using bitwise Pauli grouping.
 
     Inputs:
         - h: Hamiltonian in dictionary form.
@@ -56,24 +19,4 @@ def bitwise_simple(
         - reps: Repetitions for Trotterization.
     Returns: QuantumCircuit that will simulate the Hamiltonian
     """
-    pauli_list = list(h.keys())
-
-    if len(pauli_list) == 0:
-        raise ValueError("Input Hamiltonian was empty.")
-
-    # size of any pauli operator
-    num_qubits = len(pauli_list[0])
-
-    groups = bitwise_group(pauli_list)
-    grouped_hs = [{pauli: h[pauli] for pauli in group} for group in groups]
-
-    # Using rotation and anti-rotation functionality, time must be divided
-    trotter_circs = [group_trotter(h_i, t / reps) for h_i in grouped_hs]
-    final_circuit = QuantumCircuit(num_qubits)
-
-    # Repeating
-    for _ in range(reps):
-        for circ in trotter_circs:
-            final_circuit = final_circuit.compose(circ)
-
-    return final_circuit
+    return generic(Bitwise, lexico, h, t, reps)

@@ -1,5 +1,4 @@
-from abc import abstractmethod  # Built in. No install needed.
-from typing import Iterable
+from abc import abstractmethod
 
 
 class Grouper:
@@ -11,7 +10,7 @@ class Grouper:
         self._commutable_sets = []
 
     @property
-    def groups(self) -> Iterable[Iterable[str]]:
+    def groups(self) -> list[set[str]]:
         return self._commutable_sets
 
     @abstractmethod
