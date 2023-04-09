@@ -1,4 +1,5 @@
 from .grouper import Grouper
+from ..utils import get_el
 
 
 class Bitwise(Grouper):
@@ -83,10 +84,7 @@ def bitwise_representor(pauli_list: set[str]) -> str:
     if len(pauli_list) == 0:
         raise ValueError("Empty Group, no representation can be made.")
 
-    x = ""
-    for a in pauli_list:
-        x = a
-        break
+    x = get_el(pauli_list)
 
     repr_str = ["i"] * len(x)
 
