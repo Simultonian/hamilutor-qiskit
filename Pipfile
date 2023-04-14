@@ -9,6 +9,9 @@ pytest = "*"
 black = "*"
 qiskit = "*"
 matplotlib = "*"
+plotly = "*"
+pandas = "*"
+kaleido = "*"
 
 [dev-packages]
 
