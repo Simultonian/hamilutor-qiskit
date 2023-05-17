@@ -6,6 +6,7 @@ from ..decompose import decompose
 from ...trotter.simple import trotter
 from ...qdrift.simple import qdrift
 
+
 def test_trotter_random():
     qubits = 5
     num_terms = qubits**2
@@ -13,7 +14,6 @@ def test_trotter_random():
 
     trotter_circuit = decompose(trotter(ham))
     qdrift_circuit = decompose(qdrift(ham))
-
 
     trotter_gates = gate_count(trotter_circuit)
     qdrift_gates = gate_count(qdrift_circuit)
