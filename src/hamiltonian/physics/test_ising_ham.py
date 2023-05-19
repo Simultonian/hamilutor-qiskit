@@ -10,7 +10,7 @@ def test_ising_no_neigh():
 
 
 def test_ising_one_neigh():
-    ham = ising_1d(2, energy_prefactor=1.0, external_field=2.0)
+    ham = ising_1d(2, energy_prefactor=1.0, external_field=2.0, normalize=True)
     expected = {"xi": 2.0, "ix": 2.0, "zz": 1.0}
     expected = {p: v / sum(expected.values()) for p, v in expected.items()}
 
@@ -18,7 +18,7 @@ def test_ising_one_neigh():
 
 
 def test_ising_two_neigh():
-    ham = ising_1d(3, energy_prefactor=1.0, external_field=2.0)
+    ham = ising_1d(3, energy_prefactor=1.0, external_field=2.0, normalize=True)
     expected = {
         "xii": 2.0,
         "ixi": 2.0,
