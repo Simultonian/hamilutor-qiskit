@@ -3,7 +3,7 @@ from .heisenberg import heisenberg_xxz
 
 
 def test_heisenberg_one_neigh():
-    ham = heisenberg_xxz(2, coupling_field=1.0, external_field=2.0)
+    ham = heisenberg_xxz(2, coupling_field=1.0, external_field=2.0, normalize=True)
     expected = {"xx": 1.0, "yy": 1.0, "zz": 2.0}
     expected = {p: v / sum(expected.values()) for p, v in expected.items()}
 
@@ -11,7 +11,7 @@ def test_heisenberg_one_neigh():
 
 
 def test_heisenberg_two_neigh():
-    ham = heisenberg_xxz(3, coupling_field=1.0, external_field=2.0)
+    ham = heisenberg_xxz(3, coupling_field=1.0, external_field=2.0, normalize=True)
     expected = {
         "xxi": 1.0,
         "yyi": 1.0,

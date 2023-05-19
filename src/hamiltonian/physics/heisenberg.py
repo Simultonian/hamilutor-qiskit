@@ -1,5 +1,5 @@
 def heisenberg_xxz(
-    qubits: int, coupling_field: float, external_field: float
+    qubits: int, coupling_field: float, external_field: float, normalize=False
 ) -> dict[str, float]:
     """
     One dimensional XXZ Heisenberg model parameterized by coupling field J,
@@ -41,6 +41,9 @@ def heisenberg_xxz(
         p_i[i] = "i"
         p_i[j] = "i"
 
-    norm = sum(ham.values())
+    if normalize:
+        norm = sum(ham.values())
+    else:
+        norm = 1
     ham = {p: v / norm for p, v in ham.items()}
     return ham
