@@ -1,5 +1,5 @@
 def ising_1d(
-    qubits: int, energy_prefactor: float, external_field: float, normalize = False
+    qubits: int, energy_prefactor: float, external_field: float, normalize=False
 ) -> dict[str, float]:
     """
     One dimensional Transverse-field Ising model parameterized by energy

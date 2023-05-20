@@ -1,5 +1,6 @@
 import json
 
+
 def save_hamiltonian(ham: dict[str, float], file: str):
     try:
         with open(file, "w") as outfile:
@@ -8,6 +9,7 @@ def save_hamiltonian(ham: dict[str, float], file: str):
         raise ValueError("File not found")
     except Exception as e:
         raise e
+
 
 def load_hamiltonian(file: str) -> dict[str, float]:
     try:
