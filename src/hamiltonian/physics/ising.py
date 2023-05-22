@@ -42,7 +42,5 @@ def ising_1d(
 
     if normalize:
         norm = sum(ham.values())
-    else:
-        norm = 1
-    ham = {p: v / norm for p, v in ham.items()}
+        ham = {p: v / norm for p, v in ham.items()}
     return ham
